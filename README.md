@@ -1,3 +1,9 @@
 # PANTHEON
 
-freqtrade strategies repository
+A collection of freqtrade strategies
+
+
+## Disclaimer
+
+USE AT YOUR OWN RISK
+
