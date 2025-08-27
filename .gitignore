@@ -1,0 +1,29 @@
+!*.gitkeep
+
+# .vscode/
+.idea
+
+# macOS
+.DS_Store
+
+# python
+__pycache__/
+
+
+**/user_data/data/
+**/user_data/backtest_results/*
+!**/user_data/backtest_results/.gitkeep
+**/user_data/hyperopt_results
+**/user_data/hyperopts
+**/user_data/logs/*
+!**/user_data/logs/.gitkeep
+**/user_data/notebooks
+**/user_data/plot/
+**/user_data/*-(backtest).json
+
+
+*.sqlite
+*.sqlite-shm
+*.sqlite-wal
+
+*.log

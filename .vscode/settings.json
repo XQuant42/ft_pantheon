@@ -1,0 +1,10 @@
+{
+    "files.exclude": {
+        "**/*.log": true
+    },
+    "python.analysis.extraPaths": [
+        "../freqtrade"
+    ],
+    "python.analysis.stubPath": "../freqtrade/stubs",
+    "python.analysis.diagnosticMode": "workspace"
+}
