@@ -1,3 +1,10 @@
+# --- Do not remove these libs ---
+from freqtrade.strategy import IStrategy
+from freqtrade.strategy import IntParameter
+from pandas import DataFrame
+import numpy as np
+from technical.indicators import RMI, zema, ichimoku
+# --------------------------------
 
 class BlueEyes_MPP_v1(IStrategy):
 
@@ -50,13 +57,13 @@ class BlueEyes_MPP_v1(IStrategy):
         # dataframe normal
         """
  
-        create_ichimoku(dataframe, conversion_line_period=20, 
+        ichimoku(dataframe, conversion_line_period=20, 
                         displacement=88, base_line_periods=88, laggin_span=88)
 
-        create_ichimoku(dataframe, conversion_line_period=88, 
+        ichimoku(dataframe, conversion_line_period=88, 
                         displacement=444, base_line_periods=88, laggin_span=88)
 
-        create_ichimoku(dataframe, conversion_line_period=355,
+        ichimoku(dataframe, conversion_line_period=355,
                         displacement=880, base_line_periods=175, laggin_span=175)
 
 

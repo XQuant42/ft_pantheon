@@ -6,7 +6,7 @@ from py3cw.request import Py3CW
 
 logger = logging.getLogger(__name__)
 
-class 3c_binance_futures (your_strat):
+class _3c_binance_futures (your_strat):
 
     def confirm_trade_entry(self, pair: str, order_type: str, amount: float, rate: float, time_in_force: str, **kwargs) -> bool:
         bot_id = 1234567890
