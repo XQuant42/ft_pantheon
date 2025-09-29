@@ -1,3 +1,10 @@
+import numpy as np
+import pandas as pd
+import talib.abstract as ta
+
+from pandas import DataFrame, Series
+
+
 def RMI(dataframe, *, length=20, mom=5):
     """
     Source: https://github.com/freqtrade/technical/blob/master/technical/indicators/indicators.py#L912
