@@ -1,7 +1,7 @@
 import numpy as np
 import talib.abstract as ta
 import freqtrade.vendor.qtpylib.indicators as qtpylib
-import arrow
+#import arrow
 
 from freqtrade.strategy import (IStrategy, merge_informative_pair, stoploss_from_open, 
                                 IntParameter, DecimalParameter, CategoricalParameter)

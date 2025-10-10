@@ -1,7 +1,7 @@
 import numpy as np
 import talib.abstract as ta
 import freqtrade.vendor.qtpylib.indicators as qtpylib
-import arrow
+#import arrow
 import array as arr
 
 from freqtrade.strategy.interface import IStrategy

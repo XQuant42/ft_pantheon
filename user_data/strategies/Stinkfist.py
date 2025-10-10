@@ -2,7 +2,7 @@ import numpy as np
 import talib.abstract as ta
 import technical.indicators as ti
 import freqtrade.vendor.qtpylib.indicators as qtpylib
-import arrow
+# #import arrow
 from freqtrade.strategy.interface import IStrategy
 from freqtrade.strategy import merge_informative_pair
 from typing import Dict, List, Optional, Tuple

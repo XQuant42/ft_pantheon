@@ -20,7 +20,7 @@ import pandas as pd
 from warnings import simplefilter
 simplefilter(action="ignore", category=pd.errors.PerformanceWarning)
 
-import arrow
+#import arrow
 from freqtrade.exchange import timeframe_to_minutes
 import time
 
