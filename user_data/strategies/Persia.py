@@ -5,7 +5,7 @@
 # freqtrade hyperopt --hyperopt-loss SharpeHyperOptLoss --strategy Persia
 # --- Do not remove these libs ---
 from typing import get_type_hints
-from numpy.lib.function_base import append
+# from numpy.lib.function_base import append
 
 from pandas.core.series import Series
 
