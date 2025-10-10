@@ -9,7 +9,7 @@ from pandas import DataFrame, Series
 from freqtrade.persistence import Trade
 from datetime import datetime
 import talib.abstract as taa
-import ta
+import talib.abstract as ta
 from functools import reduce
 import numpy as np
 

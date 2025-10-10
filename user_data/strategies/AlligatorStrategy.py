@@ -11,7 +11,7 @@ from freqtrade.strategy import (BooleanParameter, CategoricalParameter, DecimalP
 
 # --------------------------------
 # Add your lib to import here
-import ta
+import talib.abstract as ta
 
 
 # This class is a sample. Feel free to customize it.

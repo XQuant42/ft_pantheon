@@ -87,7 +87,7 @@ class GodStra(IStrategy):
 
     def populate_indicators(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         # Add all ta features
-        dataframe = dropna(dataframe)
+        dataframe = dataframe.dropna()
         dataframe = add_all_ta_features(
             dataframe, open="open", high="high", low="low", close="close", volume="volume",
             fillna=True)

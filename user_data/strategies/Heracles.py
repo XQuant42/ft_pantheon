@@ -18,8 +18,7 @@ from pandas import DataFrame
 # Add your lib to import here
 # import talib.abstract as ta
 import pandas as pd
-import ta
-from ta.utils import dropna
+import talib.abstract as ta
 import freqtrade.vendor.qtpylib.indicators as qtpylib
 from functools import reduce
 import numpy as np
@@ -65,7 +64,7 @@ class Heracles(IStrategy):
     buy_crossed_indicator_shift = IntParameter(0, 20, default=9, space='buy')
 
     def populate_indicators(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
-        dataframe = dropna(dataframe)
+        dataframe = dataframe.dropna()
 
         dataframe['volatility_kcw'] = ta.volatility.keltner_channel_wband(
             dataframe['high'],
