@@ -9,7 +9,7 @@ import freqtrade.vendor.qtpylib.indicators as qtpylib
 
 
 class ADX_15M_USDT(IStrategy):
-    ticker_interval = '15m'
+    timeframe = '15m'
 
     # ROI table:
     minimal_roi = {

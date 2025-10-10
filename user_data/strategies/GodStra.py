@@ -23,7 +23,6 @@ from numpy.lib import math
 from pandas import DataFrame
 # import talib.abstract as ta
 from ta import add_all_ta_features
-from ta.utils import dropna
 
 # --------------------------------
 

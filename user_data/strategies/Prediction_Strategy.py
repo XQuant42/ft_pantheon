@@ -8,7 +8,7 @@ import xgboost
 import catboost
 import sklearn
 import pickle
-from numba import jit
+# from numba import jit
 from scipy import signal
 
 from freqtrade.strategy import IStrategy
