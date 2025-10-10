@@ -5,7 +5,7 @@ import talib.abstract as ta
 from pandas import DataFrame
 import freqtrade.vendor.qtpylib.indicators as qtpylib
 from freqtrade.strategy.interface import IStrategy
-from freqtrade.strategy.hyper import (CategoricalParameter, DecimalParameter, IntParameter,
+from freqtrade.strategy import (CategoricalParameter, DecimalParameter, IntParameter,
                                       RealParameter)
 
 # ^ TA-Lib Autofill mostly broken in JetBrains Products,

@@ -22,7 +22,7 @@
 # github: https://github.com/mablue/
 # (First Hyperopt it.A hyperopt file is available)
 # --- Do not remove these libs ---
-from freqtrade.strategy.hyper import CategoricalParameter, DecimalParameter, IntParameter
+from freqtrade.strategy import CategoricalParameter, DecimalParameter, IntParameter
 from freqtrade.strategy.interface import IStrategy
 from pandas import DataFrame
 # --------------------------------

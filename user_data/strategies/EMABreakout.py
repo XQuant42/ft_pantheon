@@ -7,7 +7,7 @@ from typing import Dict, List
 from functools import reduce
 from pandas import DataFrame
 # --------------------------------
-from freqtrade.strategy.hyper import CategoricalParameter, DecimalParameter, IntParameter
+from freqtrade.strategy import CategoricalParameter, DecimalParameter, IntParameter
 
 
 import talib.abstract as ta

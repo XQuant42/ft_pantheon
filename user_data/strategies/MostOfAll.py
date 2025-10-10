@@ -6,7 +6,7 @@ import numpy as np
 from functools import reduce
 import talib.abstract as ta
 import freqtrade.vendor.qtpylib.indicators as qtpylib
-from freqtrade.strategy.hyper import DecimalParameter
+from freqtrade.strategy import DecimalParameter
 from freqtrade.persistence import Trade
 from datetime import datetime
 from freqtrade.strategy import stoploss_from_open

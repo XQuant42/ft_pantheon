@@ -4,7 +4,7 @@
 # freqtrade hyperopt --hyperopt-loss SharpeHyperOptLoss --spaces buy roi trailing sell --strategy GodStraNew
 # --- Do not remove these libs ---
 from freqtrade import data
-from freqtrade.strategy.hyper import CategoricalParameter, DecimalParameter
+from freqtrade.strategy import CategoricalParameter, DecimalParameter
 
 from numpy.lib import math
 from freqtrade.strategy.interface import IStrategy
