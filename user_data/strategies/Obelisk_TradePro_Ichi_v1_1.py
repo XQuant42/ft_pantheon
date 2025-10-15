@@ -18,7 +18,7 @@ from datetime import datetime, timedelta
 # Obelisk_TradeProIM v1 - 2021-03-25
 #
 # by Obelisk 
-# https://twitter.com/brookmiles
+# https://github.com/brookmiles/
 #
 # Based on "Crazy Results Best Ichimoku Cloud Trading Strategy Proven 100 Trades" by Trade Pro
 # https://www.youtube.com/watch?v=8gWIykJgMNY
@@ -30,7 +30,7 @@ class Obelisk_TradePro_Ichi_v1_1(IStrategy):
     # Optimal timeframe for the strategy
     timeframe = '1h'
 
-    startup_candle_count = 120
+    startup_candle_count = 180
     process_only_new_candles = True
 
     # no ROI

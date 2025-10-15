@@ -10,17 +10,13 @@ import numpy as np
 import technical.indicators as ftt
 from freqtrade.exchange import timeframe_to_minutes
 
-# Obelisk_Ichimoku_Slow v1.3 - 2021-04-20
+# Obelisk_Ichimoku_Slow v1.1 - 2021-04-04
 #
 # by Obelisk 
 # https://github.com/brookmiles/
 #
-# 1.3 increase return without too much additional drawdown
-#  - add ema entry guards
-#  - remove cloud top exit signal from 1.2
-#
 # The point of this strategy is to buy and hold an up trend as long as possible.
-# If you are tempted to add ROI or trailing stops, you will need to make other modifications as well.
+# If you are tempted to add ROI or trailing stops, you might be better off using Obelisk_TradePro_Ichi instead.
 #
 # This strategy can optionally be backtested at 5m or 1m to validate roi/trailing stop behaviour (there isn't any).
 #
@@ -42,32 +38,39 @@ from freqtrade.exchange import timeframe_to_minutes
 #     "pairlists": [
 #         {
 #             "method": "VolumePairList",
-#             "number_assets": 25,
+#             "number_assets": 50,
 #             "sort_key": "quoteVolume",
 #             "refresh_period": 1800
 #         },
 #         {"method": "AgeFilter", "min_days_listed": 10},
 #         {"method": "PrecisionFilter"},
 #         {"method": "PriceFilter", "low_price_ratio": 0.001},
+#         {"method": "SpreadFilter", "max_spread_ratio": 0.002},
 #         {
 #             "method": "RangeStabilityFilter",
 #             "lookback_days": 3,
-#             "min_rate_of_change": 0.1,
+#             "min_rate_of_change": 0.2,
 #             "refresh_period": 1440
+#         },
+#         {
+#             "method": "VolumePairList",
+#             "number_assets": 25,
+#             "sort_key": "quoteVolume",
 #         },
 #     ],
 
-def ssl_atr(dataframe, length = 7):
+def SSLChannels(dataframe, length = 7):
     df = dataframe.copy()
-    df['smaHigh'] = df['high'].rolling(length).mean() + df['atr']
-    df['smaLow'] = df['low'].rolling(length).mean() - df['atr']
+    df['ATR'] = ta.ATR(df, timeperiod=14)
+    df['smaHigh'] = df['high'].rolling(length).mean() + df['ATR']
+    df['smaLow'] = df['low'].rolling(length).mean() - df['ATR']
     df['hlv'] = np.where(df['close'] > df['smaHigh'], 1, np.where(df['close'] < df['smaLow'], -1, np.NAN))
     df['hlv'] = df['hlv'].ffill()
     df['sslDown'] = np.where(df['hlv'] < 0, df['smaHigh'], df['smaLow'])
     df['sslUp'] = np.where(df['hlv'] < 0, df['smaLow'], df['smaHigh'])
     return df['sslDown'], df['sslUp']
 
-class Obelisk_Ichimoku_Slow_v1_3(IStrategy):
+class Obelisk_Ichimoku_Slow_v1_1(IStrategy):
 
     # Optimal timeframe for the strategy
     timeframe = '1h'
@@ -96,14 +99,53 @@ class Obelisk_Ichimoku_Slow_v1_3(IStrategy):
     # Stoploss:
     stoploss = -0.99
 
+    plot_config = {
+        # Main plot indicators (Moving averages, ...)
+        'main_plot': {
+            'senkou_a': {
+                'color': 'green',
+                'fill_to': 'senkou_b',
+                'fill_label': 'Ichimoku Cloud',
+                'fill_color': 'rgba(0,0,0,0.2)',
+            },
+            # plot senkou_b, too. Not only the area to it.
+            'senkou_b': {
+                'color': 'red',
+            },
+            'tenkan_sen': { 'color': 'orange' },
+            'kijun_sen': { 'color': 'blue' },
+
+            # 'chikou_span': { 'color': 'lightgreen' },
+
+            # 'ssl_up': { 'color': 'green' },
+            # 'ssl_down': { 'color': 'red' },
+        },
+        'subplots': {
+            "Signals": {
+                'go_long': {'color': 'blue'},
+                'buy_criteria': {'color': 'green'},
+                'sell_criteria': {'color': 'red'},
+            },
+        }
+    }
 
     def informative_pairs(self):
         pairs = self.dp.current_whitelist()
         informative_pairs = [(pair, self.informative_timeframe) for pair in pairs]
         return informative_pairs
 
-    def slow_tf_indicators(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
+    def do_indicators(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
 
+        # # Standard Settings
+        # displacement = 26
+        # ichimoku = ftt.ichimoku(dataframe, 
+        #     conversion_line_period=9, 
+        #     base_line_periods=26,
+        #     laggin_span=52, 
+        #     displacement=displacement
+        #     )
+
+        # Crypto Settings
         displacement = 30
         ichimoku = ftt.ichimoku(dataframe, 
             conversion_line_period=20, 
@@ -126,9 +168,6 @@ class Obelisk_Ichimoku_Slow_v1_3(IStrategy):
         dataframe['cloud_green'] = ichimoku['cloud_green'] * 1
         dataframe['cloud_red'] = ichimoku['cloud_red'] * -1
 
-        dataframe.loc[:, 'cloud_top'] = dataframe.loc[:, ['senkou_a', 'senkou_b']].max(axis=1)
-        dataframe.loc[:, 'cloud_bottom'] = dataframe.loc[:, ['senkou_a', 'senkou_b']].min(axis=1)
-
         # DANGER ZONE START
 
         # NOTE: Not actually the future, present data that is normally shifted forward for display as the cloud
@@ -144,56 +183,30 @@ class Obelisk_Ichimoku_Slow_v1_3(IStrategy):
 
         # DANGER ZONE END
 
-        dataframe['ema50'] = ta.EMA(dataframe, timeperiod=50)
-        dataframe['ema200'] = ta.EMA(dataframe, timeperiod=200)
-        dataframe['ema_ok'] = (
-                (dataframe['close'] > dataframe['ema50'])
-                & (dataframe['ema50'] > dataframe['ema200'])
-            ).astype('int') * 2
-
-        dataframe['efi_base'] = ((dataframe['close'] - dataframe['close'].shift()) * dataframe['volume'])
-        dataframe['efi'] = ta.EMA(dataframe['efi_base'], 13)
-        dataframe['efi_ok'] = (dataframe['efi'] > 0).astype('int')
-
-        dataframe['atr'] = ta.ATR(dataframe, timeperiod=14)
-        ssl_down, ssl_up = ssl_atr(dataframe, 10)
+        ssl_down, ssl_up = SSLChannels(dataframe, 10)
         dataframe['ssl_down'] = ssl_down
         dataframe['ssl_up'] = ssl_up
-        dataframe['ssl_ok'] = (
-                (ssl_up > ssl_down) 
-            ).astype('int') * 3
+        dataframe['ssl_high'] = (ssl_up > ssl_down).astype('int') * 3
 
-        dataframe['ichimoku_ok'] = (
-                (dataframe['tenkan_sen'] > dataframe['kijun_sen'])
-                & (dataframe['close'] > dataframe['cloud_top'])
-                & (dataframe['future_green'] > 0) 
-                & (dataframe['chikou_high'] > 0) 
-            ).astype('int') * 4
+        dataframe['buy_criteria'] = (
+                (dataframe['tenkan_sen'] > dataframe['kijun_sen']) &
+                (dataframe['close'] > dataframe['senkou_a']) &
+                (dataframe['close'] > dataframe['senkou_b']) &
+                (dataframe['future_green'] > 0) &
+                (dataframe['chikou_high'] > 0) &
+                (dataframe['ssl_high'] > 0) &
+                (dataframe['open'] < dataframe['ssl_up']) &
+                (dataframe['close'] < dataframe['ssl_up'])
+                ).astype('int') * 2
 
-        dataframe['entry_ok'] = (
-                (dataframe['efi_ok'] > 0)
-                & (dataframe['open'] < dataframe['ssl_up'])
-                & (dataframe['close'] < dataframe['ssl_up'])
+        dataframe['sell_criteria'] = (
+                (dataframe['ssl_high'] == 0)
             ).astype('int') * 1
 
-        dataframe['trend_pulse'] = (
-                (dataframe['ichimoku_ok'] > 0) 
-                & (dataframe['ssl_ok'] > 0)
-                & (dataframe['ema_ok'] > 0)
-            ).astype('int') * 2
+        dataframe.loc[ (dataframe['buy_criteria'] > 0), 'go_long'] = 3
+        dataframe.loc[ (dataframe['sell_criteria'] > 0) , 'go_long'] = 0
+        dataframe['go_long'].fillna(method='ffill', inplace=True)
 
-        dataframe['trend_over'] = (
-                (dataframe['ssl_ok'] == 0)
-            ).astype('int') * 1
-
-        dataframe.loc[ (dataframe['trend_pulse'] > 0), 'trending'] = 3
-        dataframe.loc[ (dataframe['trend_over'] > 0) , 'trending'] = 0
-        dataframe['trending'].fillna(method='ffill', inplace=True)
-
-        return dataframe
-
-    def fast_tf_indicators(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
-        # none atm
         return dataframe
 
     def populate_indicators(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
@@ -203,72 +216,37 @@ class Obelisk_Ichimoku_Slow_v1_3(IStrategy):
         #     assert (timeframe_to_minutes(self.timeframe) <= 5), "Backtest this strategy in 5m or 1m timeframe."
 
         if self.timeframe == self.informative_timeframe:
-            dataframe = self.slow_tf_indicators(dataframe, metadata)
+            dataframe = self.do_indicators(dataframe, metadata)
         else:
-            assert self.dp, "DataProvider is required for multiple timeframes."
+            if not self.dp:
+                return dataframe
 
             informative = self.dp.get_pair_dataframe(pair=metadata['pair'], timeframe=self.informative_timeframe)
-            informative = self.slow_tf_indicators(informative.copy(), metadata)
+
+            informative = self.do_indicators(informative.copy(), metadata)
 
             dataframe = merge_informative_pair(dataframe, informative, self.timeframe, self.informative_timeframe, ffill=True)
             # don't overwrite the base dataframe's OHLCV information
             skip_columns = [(s + "_" + self.informative_timeframe) for s in ['date', 'open', 'high', 'low', 'close', 'volume']]
             dataframe.rename(columns=lambda s: s.replace("_{}".format(self.informative_timeframe), "") if (not s in skip_columns) else s, inplace=True)
 
-        dataframe = self.fast_tf_indicators(dataframe, metadata)
-
         return dataframe
 
     def populate_buy_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
+
         dataframe.loc[
-            (dataframe['trending'] > 0)
-            & (dataframe['entry_ok'] > 0)
-            & (dataframe['date'].dt.minute == 0) # when backtesting at 5m/1m only set signal on the hour
-        , 'buy'] = 1
+            dataframe['go_long'] > 0
+        ,
+        'buy'] = 1
+
         return dataframe
 
     def populate_sell_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
+
         dataframe.loc[
-            (dataframe['trending'] == 0)
-            & (dataframe['date'].dt.minute == 0) # when backtesting at 5m/1m only set signal on the hour
-            , 'sell'] = 1
+            dataframe['go_long'] == 0
+        ,
+        'sell'] = 1
+
         return dataframe
 
-    plot_config = {
-        # Main plot indicators (Moving averages, ...)
-        'main_plot': {
-            'senkou_a': {
-                'color': 'green',
-                'fill_to': 'senkou_b',
-                'fill_label': 'Ichimoku Cloud',
-                'fill_color': 'rgba(0,0,0,0.2)',
-            },
-            # plot senkou_b, too. Not only the area to it.
-            'senkou_b': {
-                'color': 'red',
-            },
-            'tenkan_sen': { 'color': 'blue' },
-            'kijun_sen': { 'color': 'orange' },
-
-            # 'chikou_span': { 'color': 'lightgreen' },
-
-            # 'ssl_up': { 'color': 'green' },
-            # 'ssl_down': { 'color': 'red' },
-
-            # 'ema50': { 'color': 'violet' },
-            # 'ema200': { 'color': 'magenta' },
-        },
-        'subplots': {
-            "Trend": {
-                'trend_pulse': {'color': 'blue'},
-                'trending': {'color': 'orange'},
-                'trend_over': {'color': 'red'},
-            },
-            "Signals": {
-                'ichimoku_ok': {'color': 'green'},
-                'ssl_ok': {'color': 'red'},
-                'ema_ok': {'color': 'orange'},
-                'entry_ok': {'color': 'blue'},
-            },
-        }
-    }

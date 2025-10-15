@@ -10,14 +10,14 @@ import numpy as np
 import technical.indicators as ftt
 from freqtrade.exchange import timeframe_to_minutes
 
-# Obelisk_Ichimoku_Slow v1.3 - 2021-04-20
+# Obelisk_Ichimoku_Slow v1.2 - 2021-04-17
 #
 # by Obelisk 
 # https://github.com/brookmiles/
 #
-# 1.3 increase return without too much additional drawdown
-#  - add ema entry guards
-#  - remove cloud top exit signal from 1.2
+# 1.2 is aimed at reducing drawdown
+#  - additional entry guard, ensure rising, but not overbought
+#  - additional exit signal, earlier exit at end of trend
 #
 # The point of this strategy is to buy and hold an up trend as long as possible.
 # If you are tempted to add ROI or trailing stops, you will need to make other modifications as well.
@@ -52,8 +52,13 @@ from freqtrade.exchange import timeframe_to_minutes
 #         {
 #             "method": "RangeStabilityFilter",
 #             "lookback_days": 3,
-#             "min_rate_of_change": 0.1,
+#             "min_rate_of_change": 0.05,
 #             "refresh_period": 1440
+#         },
+#         {
+#             "method": "VolumePairList",
+#             "number_assets": 15,
+#             "sort_key": "quoteVolume",
 #         },
 #     ],
 
@@ -67,7 +72,7 @@ def ssl_atr(dataframe, length = 7):
     df['sslUp'] = np.where(df['hlv'] < 0, df['smaLow'], df['smaHigh'])
     return df['sslDown'], df['sslUp']
 
-class Obelisk_Ichimoku_Slow_v1_3(IStrategy):
+class Obelisk_Ichimoku_Slow_v1_2(IStrategy):
 
     # Optimal timeframe for the strategy
     timeframe = '1h'
@@ -144,13 +149,7 @@ class Obelisk_Ichimoku_Slow_v1_3(IStrategy):
 
         # DANGER ZONE END
 
-        dataframe['ema50'] = ta.EMA(dataframe, timeperiod=50)
-        dataframe['ema200'] = ta.EMA(dataframe, timeperiod=200)
-        dataframe['ema_ok'] = (
-                (dataframe['close'] > dataframe['ema50'])
-                & (dataframe['ema50'] > dataframe['ema200'])
-            ).astype('int') * 2
-
+        # EFI
         dataframe['efi_base'] = ((dataframe['close'] - dataframe['close'].shift()) * dataframe['volume'])
         dataframe['efi'] = ta.EMA(dataframe['efi_base'], 13)
         dataframe['efi_ok'] = (dataframe['efi'] > 0).astype('int')
@@ -161,14 +160,14 @@ class Obelisk_Ichimoku_Slow_v1_3(IStrategy):
         dataframe['ssl_up'] = ssl_up
         dataframe['ssl_ok'] = (
                 (ssl_up > ssl_down) 
-            ).astype('int') * 3
+            ).astype('int') * 2
 
         dataframe['ichimoku_ok'] = (
                 (dataframe['tenkan_sen'] > dataframe['kijun_sen'])
                 & (dataframe['close'] > dataframe['cloud_top'])
                 & (dataframe['future_green'] > 0) 
                 & (dataframe['chikou_high'] > 0) 
-            ).astype('int') * 4
+            ).astype('int') * 3
 
         dataframe['entry_ok'] = (
                 (dataframe['efi_ok'] > 0)
@@ -179,11 +178,14 @@ class Obelisk_Ichimoku_Slow_v1_3(IStrategy):
         dataframe['trend_pulse'] = (
                 (dataframe['ichimoku_ok'] > 0) 
                 & (dataframe['ssl_ok'] > 0)
-                & (dataframe['ema_ok'] > 0)
             ).astype('int') * 2
 
         dataframe['trend_over'] = (
                 (dataframe['ssl_ok'] == 0)
+                | (
+                    (dataframe['open'] < dataframe['cloud_top'])
+                    & (dataframe['close'] < dataframe['cloud_top'])
+                )
             ).astype('int') * 1
 
         dataframe.loc[ (dataframe['trend_pulse'] > 0), 'trending'] = 3
@@ -223,14 +225,12 @@ class Obelisk_Ichimoku_Slow_v1_3(IStrategy):
         dataframe.loc[
             (dataframe['trending'] > 0)
             & (dataframe['entry_ok'] > 0)
-            & (dataframe['date'].dt.minute == 0) # when backtesting at 5m/1m only set signal on the hour
         , 'buy'] = 1
         return dataframe
 
     def populate_sell_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         dataframe.loc[
             (dataframe['trending'] == 0)
-            & (dataframe['date'].dt.minute == 0) # when backtesting at 5m/1m only set signal on the hour
             , 'sell'] = 1
         return dataframe
 
@@ -254,9 +254,6 @@ class Obelisk_Ichimoku_Slow_v1_3(IStrategy):
 
             # 'ssl_up': { 'color': 'green' },
             # 'ssl_down': { 'color': 'red' },
-
-            # 'ema50': { 'color': 'violet' },
-            # 'ema200': { 'color': 'magenta' },
         },
         'subplots': {
             "Trend": {
@@ -266,9 +263,8 @@ class Obelisk_Ichimoku_Slow_v1_3(IStrategy):
             },
             "Signals": {
                 'ichimoku_ok': {'color': 'green'},
-                'ssl_ok': {'color': 'red'},
-                'ema_ok': {'color': 'orange'},
-                'entry_ok': {'color': 'blue'},
+                'ssl_ok': {'color': 'blue'},
+                'entry_ok': {'color': 'orange'},
             },
         }
     }

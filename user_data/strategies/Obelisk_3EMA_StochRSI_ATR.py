@@ -17,7 +17,7 @@ logger = logging.getLogger(__name__)
 
 # Obelisk_3EMA_StochRSI_ATR - 2021-04-10
 #
-# by Obelisk
+# by Obelisk 
 # https://github.com/brookmiles/
 #
 # DO NOT RUN LIVE
@@ -76,7 +76,7 @@ class Obelisk_3EMA_StochRSI_ATR(IStrategy):
         #RSI
         dataframe['rsi'] = ta.RSI(dataframe, timeperiod=14)
 
-        #StochRSI
+        #StochRSI 
         period = 14
         smoothD = 3
         SmoothK = 3
@@ -184,9 +184,9 @@ class Obelisk_3EMA_StochRSI_ATR(IStrategy):
                 new_stop = stoploss_from_open(-stop_pct, current_profit)
                 logger.debug("open={}, current={}, profit={}, stop_pct={}, stop={}".format(
                     current_rate / (1 + current_profit),
-                    current_rate,
-                    current_profit,
-                    stop_pct,
+                    current_rate, 
+                    current_profit, 
+                    stop_pct, 
                     current_rate * (1 - new_stop)))
                 if new_stop > 0:
                     result = new_stop
@@ -211,3 +211,4 @@ class Obelisk_3EMA_StochRSI_ATR(IStrategy):
             },
         }
     }
+
