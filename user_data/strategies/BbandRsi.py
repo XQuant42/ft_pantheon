@@ -33,19 +33,6 @@ class BbandRsi(IStrategy):
     # Optimal timeframe for the strategy
     timeframe = '1h'
 
-    plot_config = {
-        'main_plot': {
-            'bb_lowerband': {},
-            'bb_middleband': {},
-            'bb_upperband': {}
-        },
-        'subplots': {
-            "RSI": {
-                'rsi': {'color': 'blue'}
-            }
-        }
-    }
-
     def populate_indicators(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         dataframe['rsi'] = ta.RSI(dataframe, timeperiod=14)
 
