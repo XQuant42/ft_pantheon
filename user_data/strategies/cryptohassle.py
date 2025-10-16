@@ -117,7 +117,7 @@ class cryptohassle(IStrategy):
             if mode == 'sma':
                 df['smaHigh'] = df['ha_high'].rolling(length).mean()
                 df['smaLow'] = df['ha_low'].rolling(length).mean()
-            df['hlv'] = np.where(df['ha_close'] > df['smaHigh'], 1, np.where(df['ha_close'] < df['smaLow'], -1, np.NAN))
+            df['hlv'] = np.where(df['ha_close'] > df['smaHigh'], 1, np.where(df['ha_close'] < df['smaLow'], -1, np.nan))
             df['hlv'] = df['hlv'].ffill()
             df['ha_sslDown'] = np.where(df['hlv'] < 0, df['smaHigh'], df['smaLow'])
             df['ha_sslUp'] = np.where(df['hlv'] < 0, df['smaLow'], df['smaHigh'])

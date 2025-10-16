@@ -3759,7 +3759,7 @@ def SSLChannels(dataframe, length = 7):
     ATR = ta.ATR(dataframe, timeperiod=14)
     smaHigh = dataframe['high'].rolling(length).mean() + ATR
     smaLow = dataframe['low'].rolling(length).mean() - ATR
-    hlv = Series(np.where(dataframe['close'] > smaHigh, 1, np.where(dataframe['close'] < smaLow, -1, np.NAN)))
+    hlv = Series(np.where(dataframe['close'] > smaHigh, 1, np.where(dataframe['close'] < smaLow, -1, np.nan)))
     hlv = hlv.ffill()
     sslDown = np.where(hlv < 0, smaHigh, smaLow)
     sslUp = np.where(hlv < 0, smaLow, smaHigh)

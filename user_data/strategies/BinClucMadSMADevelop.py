@@ -1179,7 +1179,7 @@ def SSLChannels_ATR(dataframe, length=7):
     df["smaHigh"] = df["high"].rolling(length).mean() + df["ATR"]
     df["smaLow"] = df["low"].rolling(length).mean() - df["ATR"]
     df["hlv"] = np.where(
-        df["close"] > df["smaHigh"], 1, np.where(df["close"] < df["smaLow"], -1, np.NAN)
+        df["close"] > df["smaHigh"], 1, np.where(df["close"] < df["smaLow"], -1, np.nan)
     )
     df["hlv"] = df["hlv"].ffill()
     df["sslDown"] = np.where(df["hlv"] < 0, df["smaHigh"], df["smaLow"])
@@ -1195,7 +1195,7 @@ def SSLChannels(dataframe, length=7):
     df["smaHigh"] = df["high"].rolling(length).mean() + df["ATR"]
     df["smaLow"] = df["low"].rolling(length).mean() - df["ATR"]
     df["hlv"] = np.where(
-        df["close"] > df["smaHigh"], 1, np.where(df["close"] < df["smaLow"], -1, np.NAN)
+        df["close"] > df["smaHigh"], 1, np.where(df["close"] < df["smaLow"], -1, np.nan)
     )
     df["hlv"] = df["hlv"].ffill()
     df["sslDown"] = np.where(df["hlv"] < 0, df["smaHigh"], df["smaLow"])
