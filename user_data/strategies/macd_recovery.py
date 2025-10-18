@@ -17,7 +17,7 @@ __BTC_donation__ = "3FgFaG15yntZYSUzfEpxr5mDt1RArvcQrK"
 
 class macd_recovery(IStrategy):
 
-    ticker_interval = '5m'
+    timeframe = '5m'
 
     # ROI table:
     minimal_roi = {

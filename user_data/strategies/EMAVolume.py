@@ -27,7 +27,7 @@ class EMAVolume(IStrategy):
     stoploss = -0.2
 
     # Optimal ticker interval for the strategy
-    ticker_interval = '15m'
+    timeframe = '15m'
 
     def populate_indicators(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         dataframe['ema13']=ta.EMA(dataframe, timeperiod=13)

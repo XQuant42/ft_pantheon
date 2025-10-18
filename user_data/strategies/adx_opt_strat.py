@@ -34,7 +34,7 @@ class adx_opt_strat(IStrategy):
     trailing_stop_positive_offset = 0.34487  
 
     # Optimal ticker interval for the strategy
-    ticker_interval = '1m'
+    timeframe = '1m'
 
     def populate_indicators(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         dataframe['adx'] = ta.ADX(dataframe, timeperiod=14)

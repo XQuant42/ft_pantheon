@@ -31,7 +31,7 @@ class AlligatorStrat(IStrategy):
     stoploss = -0.2
 
     # Optimal ticker interval for the strategy
-    ticker_interval = '4h'
+    timeframe = '4h'
 
     def populate_indicators(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
 

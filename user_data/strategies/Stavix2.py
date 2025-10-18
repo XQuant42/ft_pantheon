@@ -10,7 +10,7 @@ class Stavix2(IStrategy):
     }
     stoploss = -0.10
 
-    ticker_interval = '1m'
+    timeframe = '1m'
 
     def populate_indicators(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         cloud = ichimoku(dataframe, conversion_line_period=200, base_line_periods=350, laggin_span=150, displacement=75)

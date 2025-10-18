@@ -10,7 +10,7 @@ class JustROCR(IStrategy):
 
     stoploss = -0.20
     trailing_stop = True
-    ticker_interval = '1h'
+    timeframe = '1h'
 
     def populate_indicators(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         dataframe['rocr'] = ta.ROCR(dataframe, period=499)

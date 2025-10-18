@@ -10,7 +10,7 @@ import talib.abstract as ta
 
 class MACDRSI200(IStrategy):
 
-    ticker_interval = '5m'
+    timeframe = '5m'
 
     # ROI table:
     minimal_roi = {

@@ -21,7 +21,7 @@ class bbema(IStrategy):
     stoploss = -0.10
 
     # Optimal ticker interval for the strategy
-    ticker_interval = '1h'
+    timeframe = '1h'
 
     # Optional order type mapping
     order_types = {

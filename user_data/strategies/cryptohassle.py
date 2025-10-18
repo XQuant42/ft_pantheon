@@ -43,7 +43,7 @@ class cryptohassle(IStrategy):
 
 
     # Optimal ticker interval for the strategy
-    ticker_interval = '1h'
+    timeframe = '1h'
     # Optional order type mapping.
     order_types = {
         'buy': 'market',

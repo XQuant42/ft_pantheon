@@ -44,14 +44,14 @@ class ScalpingCCI(IStrategy):
     stoploss = -0.04
     # Optimal ticker interval for the strategy
     # the shorter the better
-    ticker_interval = '15'
+    timeframe = '15'
 
     def get_ticker_indicator(self):
-        if 'm' in self.ticker_interval:
-            return [int(s) for s in self.ticker_interval.split('m') if s.isdigit()][0]
-        elif 'h' in self.ticker_interval:
-            return [int(s) for s in self.ticker_interval.split('h') if s.isdigit()][0]*60
-        return int(self.ticker_interval)
+        if 'm' in self.timeframe:
+            return [int(s) for s in self.timeframe.split('m') if s.isdigit()][0]
+        elif 'h' in self.timeframe:
+            return [int(s) for s in self.timeframe.split('h') if s.isdigit()][0]*60
+        return int(self.timeframe)
 
     def populate_indicators(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         dataframe['sma'] = ta.EMA(dataframe, timeperiod=20, price='close')

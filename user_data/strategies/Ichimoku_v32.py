@@ -18,7 +18,7 @@ class Ichimoku_v32(IStrategy):
 
     stoploss = -1 #-0.35
 
-    ticker_interval = '4h' #3m
+    timeframe = '4h' #3m
 
     # startup_candle_count: int = 2
 

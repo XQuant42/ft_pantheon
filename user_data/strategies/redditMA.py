@@ -31,7 +31,7 @@ class redditMA(IStrategy):
     stoploss = -0.5
 
     # Optimal ticker interval for the strategy
-    ticker_interval = '15m'
+    timeframe = '15m'
 
     # trailing stoploss
     trailing_stop = False

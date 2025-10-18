@@ -33,7 +33,7 @@ class BB_RSI(IStrategy):
     # This attribute will be overridden if the config file contains "stoploss"
     stoploss = -0.06491
     # Optimal ticker interval for the strategy
-    ticker_interval = '1h'
+    timeframe = '1h'
 
     # trailing stoploss
     trailing_only_offset_is_reached = False

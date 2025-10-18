@@ -54,7 +54,7 @@ class bb_rsi_opt_new(IStrategy):
     trailing_stop_positive_offset = 0.23526  # Disabled / not configured
 
     # Optimal ticker interval for the strategy.
-    ticker_interval = '1h'
+    timeframe = '1h'
 
     # Run "populate_indicators()" only for new candle.
     process_only_new_candles = False

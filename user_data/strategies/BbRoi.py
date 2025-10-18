@@ -25,7 +25,7 @@ class BbRoi(IStrategy):
     trailing_stop_positive_offset = 0.01821
     trailing_only_offset_is_reached = True
 
-    ticker_interval = '15m'
+    timeframe = '15m'
 
     # Experimental settings (configuration will overide these if set)
     use_sell_signal = True

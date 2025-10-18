@@ -34,7 +34,7 @@ class Chispei(IStrategy):
     }
 
     stoploss = -0.32336
-    ticker_interval = '4h'
+    timeframe = '4h'
 
     def populate_indicators(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         # SMA - Simple Moving Average

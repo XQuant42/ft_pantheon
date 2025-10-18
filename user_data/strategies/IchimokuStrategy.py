@@ -20,7 +20,7 @@ class IchimokuStrategy(IStrategy):
         "0": 100
     }
     stoploss = -0.10
-    ticker_interval = '3m'
+    timeframe = '3m'
     order_types = {
         'buy': 'market',
         'sell': 'market',

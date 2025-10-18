@@ -11,7 +11,7 @@ from stable_baselines3 import PPO
 class GymStrategy(IStrategy):
     stoploss = -0.20
     trailing_stop = False
-    ticker_interval = '5m'
+    timeframe = '5m'
     process_only_new_candles = False
     startup_candle_count: int = 20
     model = None

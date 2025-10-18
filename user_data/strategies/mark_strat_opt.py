@@ -53,7 +53,7 @@ class mark_strat_opt (IStrategy):
     trailing_stop_positive = 0.07573
     trailing_stop_positive_offset = 0.09805  
     # Optimal ticker interval for the strategy.
-    ticker_interval = '1m'
+    timeframe = '1m'
     # Run "populate_indicators()" only for new candle.
     process_only_new_candles = False
     # These values can be overridden in the "ask_strategy" section in the config.

@@ -42,7 +42,7 @@ class quantumfirst(IStrategy):
     stoploss = -0.10
 
     # Optimal ticker interval for the strategy
-    ticker_interval = '5m'
+    timeframe = '5m'
 
     # trailing stoploss
     trailing_stop = False

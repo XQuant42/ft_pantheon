@@ -21,7 +21,7 @@ class BBRSIS(IStrategy):
     stoploss = -0.99
 
     # Optimal ticker interval for the strategy
-    ticker_interval = '5m'
+    timeframe = '5m'
 
     # Optional order type mapping
     order_types = {
